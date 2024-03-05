@@ -1,0 +1,50 @@
+{
+    "displayedAttributes": [
+        "*"
+    ],
+    "searchableAttributes": [
+        "name"
+    ],
+    "filterableAttributes": [
+        "name"
+    ],
+    "sortableAttributes": [
+        "name"
+    ],
+    "rankingRules": [
+        "words",
+        "typo",
+        "proximity",
+        "attribute",
+        "sort",
+        "exactness"
+    ],
+    "stopWords": [
+        "category",
+        "categories"
+    ],
+    "nonSeparatorTokens": [],
+    "separatorTokens": [],
+    "dictionary": [],
+    "synonyms": {},
+    "distinctAttribute": null,
+    "proximityPrecision": "byWord",
+    "typoTolerance": {
+        "enabled": true,
+        "minWordSizeForTypos": {
+            "oneTypo": 4,
+            "twoTypos": 10
+        },
+        "disableOnWords": [],
+        "disableOnAttributes": []
+    },
+    "faceting": {
+        "maxValuesPerFacet": 100,
+        "sortFacetValuesBy": {
+            "*": "alpha"
+        }
+    },
+    "pagination": {
+        "maxTotalHits": 1000
+    }
+}

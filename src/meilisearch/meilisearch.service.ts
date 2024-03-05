@@ -117,11 +117,11 @@ export class MeiliSearchService {
     if (ignoreCache) {
       return this.meilisearchRepository.search({ index, searchText, options });
     }
-    const cacheKey = this.createSearchCacheKey({
-      indexes: [index],
-      searchText,
-      options,
-    });
+    // const cacheKey = this.createSearchCacheKey({
+    //   indexes: [index],
+    //   searchText,
+    //   options,
+    // });
     // const cachedData = await this.cacheService.getCache(cacheKey);
     // if (cachedData.cacheHit) {
     //   return cachedData.data as SearchResponse<DataType, SearchParams>;

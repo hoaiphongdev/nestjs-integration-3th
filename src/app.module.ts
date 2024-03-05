@@ -7,6 +7,7 @@ import { AppConfigModule } from '@/@core/app-config';
 import { StrapiModule } from '@/strapi/strapi.module';
 import { MeilisearchModule } from '@/meilisearch/meilisearch.module';
 import { CategoryModule } from '@/category/category.module';
+import { SearchEngineModule } from './search-engine/search-engine.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { CategoryModule } from '@/category/category.module';
     }),
     StrapiModule,
     MeilisearchModule,
-    CategoryModule
+    CategoryModule,
+    SearchEngineModule
   ],
   controllers: [AppController],
   providers: [AppService],

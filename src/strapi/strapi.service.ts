@@ -2,20 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { Request } from 'express';
 
 import { CacheService } from '@/cache/cache.service';
-// TODO [LOGGER] import module logger for strapi
-// import { LoggerService } from '@/logger/logger.service';
+import { LoggerService } from '@/logger/logger.service';
 import { MeilisearchDatabaseName } from '@/meilisearch/constants';
 import { CacheKeyPrefix, EventToClearCache, StrapiCollectionMapping } from './constants';
 
 @Injectable()
 export class StrapiService {
-  constructor(private readonly cacheService: CacheService) {
-    // private readonly loggerService: LoggerService,
-  }
+  constructor(
+    private readonly cacheService: CacheService,
+    private readonly loggerService: LoggerService
+  ) {}
 
- async delPatternCache(req: Request): Promise<{ message: string; event: string }> {
+  async delPatternCache(req: Request): Promise<{ message: string; event: string }> {
     const requestData = req.body;
-    // this.loggerService.info({ message: `Strapi webhook was received`, attributes: requestData });
+    this.loggerService.info({ message: `Strapi webhook was received`, attributes: requestData });
     const meilisearchCollection = StrapiCollectionMapping[requestData.model];
 
     if (!EventToClearCache.includes(requestData.event)) {

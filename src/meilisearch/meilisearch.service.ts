@@ -2,11 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { fromPairs, sortBy, toPairs } from 'lodash';
 import { MultiSearchQuery, SearchParams, SearchResponse } from 'meilisearch';
 
-// TODO [LOGGER] Implement logger for meilisearch
-
 import { CacheService } from '@/cache/cache.service';
-// import { LoggerErrorScope } from '@/logger/logger.constant';
-// import { LoggerService } from '@/logger/logger.service';
+import { LoggerErrorScope } from '@/logger/logger.constant';
+import { LoggerService } from '@/logger/logger.service';
 import { MeilisearchDatabaseName } from '@/meilisearch/constants';
 import { AppConfigService } from '@/@core/app-config';
 import { NestedKeys } from '@/@core/types';
@@ -21,7 +19,7 @@ export class MeiliSearchService {
   constructor(
     private readonly meilisearchRepository: MeilisearchRepository,
     private readonly cacheService: CacheService,
-    // private readonly loggerService: LoggerService,
+    private readonly loggerService: LoggerService,
     private readonly appConfigService: AppConfigService
   ) {}
 
@@ -89,18 +87,18 @@ export class MeiliSearchService {
       }
       const result = await this.meilisearchRepository.getDocument({ documentId, index, fields });
       await this.cacheService.setCache(cacheKey, JSON.stringify(result));
-      // const endTime = new Date().getTime();
-      // this.loggerService.info({
-      //   message: 'Meilisearch get document response time',
-      //   attributes: { time: endTime - startTime },
-      // });
+      const endTime = new Date().getTime();
+      this.loggerService.info({
+        message: 'Meilisearch get document response time',
+        attributes: { time: endTime - startTime },
+      });
       return result;
     } catch (error) {
-      // this.loggerService.error({
-      //   message: 'Error while getting document',
-      //   err: error,
-      //   scope: LoggerErrorScope.MeiliSearchError,
-      // });
+      this.loggerService.error({
+        message: 'Error while getting document',
+        err: error,
+        scope: LoggerErrorScope.MeiliSearchError,
+      });
     }
     return null;
   }
@@ -135,13 +133,13 @@ export class MeiliSearchService {
       options,
     });
     await this.cacheService.setCache(cacheKey, JSON.stringify(result));
-    // const endTime = new Date().getTime();
-    // if (this.appConfigService.isProduction) {
-    // this.loggerService.info({
-    //   message: 'Meilisearch search response time',
-    //   attributes: { time: endTime - startTime },
-    // });
-    // }
+    const endTime = new Date().getTime();
+    if (this.appConfigService.isProduction) {
+      this.loggerService.info({
+        message: 'Meilisearch search response time',
+        attributes: { time: endTime - startTime },
+      });
+    }
     return result;
   }
 

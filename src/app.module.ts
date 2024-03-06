@@ -7,9 +7,10 @@ import { AppConfigModule } from '@/@core/app-config';
 import { StrapiModule } from '@/strapi/strapi.module';
 import { MeilisearchModule } from '@/meilisearch/meilisearch.module';
 import { CategoryModule } from '@/category/category.module';
-import { SearchEngineModule } from './search-engine/search-engine.module';
-import { RedisModule } from './redis/redis.module';
-import { CacheModule } from './cache/cache.module';
+import { SearchEngineModule } from '@/search-engine/search-engine.module';
+import { RedisModule } from '@/redis/redis.module';
+import { CacheModule } from '@/cache/cache.module';
+import { LoggerModule } from '@/logger/logger.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { CacheModule } from './cache/cache.module';
     CategoryModule,
     SearchEngineModule,
     RedisModule,
-    CacheModule
+    CacheModule,
+    LoggerModule
   ],
   controllers: [AppController],
   providers: [AppService],

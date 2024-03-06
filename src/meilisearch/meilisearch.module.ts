@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
 
-// TODO [LOGGER] import logger for meilisearch
 
 import { CacheModule } from '@/cache/cache.module';
-// import { LoggerModule } from '@/logger/logger.module';
+import { LoggerModule } from '@/logger/logger.module';
 import { RedisModule } from '@/redis/redis.module';
 import { AppConfigModule } from '@/@core/app-config';
 
@@ -15,7 +14,7 @@ import { MeiliSearchService } from './meilisearch.service';
   imports: [
     AppConfigModule,
     RedisModule,
-    //  LoggerModule,
+     LoggerModule,
     CacheModule,
   ],
   providers: [MeilisearchProvider, MeilisearchRepository, MeiliSearchService],

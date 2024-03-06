@@ -1,10 +1,14 @@
+import { LoggerErrorScope } from '@/logger/logger.constant';
+import { LoggerService } from '@/logger/logger.service';
 import { RedisService } from '@/redis';
 import { Injectable } from '@nestjs/common';
 
-// TODO [LOGGER] implement logger
 @Injectable()
 export class CacheRepository {
-  constructor(private readonly redisService: RedisService) {}
+  constructor(
+    private readonly redisService: RedisService,
+    private readonly loggerService: LoggerService
+  ) {}
 
   async getCache(key: string): Promise<{ cacheHit: boolean; data?: Record<string, any> }> {
     try {
@@ -16,11 +20,11 @@ export class CacheRepository {
         };
       }
     } catch (error) {
-      // this.loggerService.error({
-      //   message: 'Error while getting cache data',
-      //   err: error,
-      //   scope: LoggerErrorScope.CacheDataError,
-      // });
+      this.loggerService.error({
+        message: 'Error while getting cache data',
+        err: error,
+        scope: LoggerErrorScope.CacheDataError,
+      });
     }
     return { cacheHit: false };
   }
@@ -29,11 +33,11 @@ export class CacheRepository {
     try {
       await this.redisService.set(key, data);
     } catch (error) {
-      // this.loggerService.error({
-      //   message: 'Error while getting cache data',
-      //   err: error,
-      //   scope: LoggerErrorScope.CacheDataError,
-      // });
+      this.loggerService.error({
+        message: 'Error while getting cache data',
+        err: error,
+        scope: LoggerErrorScope.CacheDataError,
+      });
     }
   }
 
@@ -41,11 +45,11 @@ export class CacheRepository {
     try {
       await this.redisService.setWithExpire(key, data, expire);
     } catch (error) {
-      // this.loggerService.error({
-      //   message: 'Error while getting cache data with expire',
-      //   err: error,
-      //   scope: LoggerErrorScope.CacheDataError,
-      // });
+      this.loggerService.error({
+        message: 'Error while getting cache data with expire',
+        err: error,
+        scope: LoggerErrorScope.CacheDataError,
+      });
     }
   }
 
@@ -53,11 +57,11 @@ export class CacheRepository {
     try {
       await this.redisService.del(key);
     } catch (error) {
-      // this.loggerService.error({
-      //   message: 'Error while deleting cache data with pattern',
-      //   err: error,
-      //   scope: LoggerErrorScope.CacheDataError,
-      // });
+      this.loggerService.error({
+        message: 'Error while deleting cache data with pattern',
+        err: error,
+        scope: LoggerErrorScope.CacheDataError,
+      });
     }
   }
 }

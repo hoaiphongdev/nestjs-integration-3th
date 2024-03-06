@@ -2,11 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { fromPairs, sortBy, toPairs } from 'lodash';
 import { MultiSearchQuery, SearchParams, SearchResponse } from 'meilisearch';
 
-
-// TODO [CACHE] Implement cache for meilisearch
 // TODO [LOGGER] Implement logger for meilisearch
 
-// import { CacheService } from '@/cache/cache.service';
+import { CacheService } from '@/cache/cache.service';
 // import { LoggerErrorScope } from '@/logger/logger.constant';
 // import { LoggerService } from '@/logger/logger.service';
 import { MeilisearchDatabaseName } from '@/meilisearch/constants';
@@ -22,7 +20,7 @@ import { MeilisearchRepository } from './meilisearch.repository';
 export class MeiliSearchService {
   constructor(
     private readonly meilisearchRepository: MeilisearchRepository,
-    // private readonly cacheService: CacheService,
+    private readonly cacheService: CacheService,
     // private readonly loggerService: LoggerService,
     private readonly appConfigService: AppConfigService
   ) {}
@@ -80,17 +78,17 @@ export class MeiliSearchService {
       if (ignoreCache) {
         return this.meilisearchRepository.getDocument({ documentId, index, fields });
       }
-      // const cacheKey = this.createDocumentCacheKey({
-      //   index,
-      //   uid,
-      //   fields,
-      // });
-      // const cachedData = await this.cacheService.getCache(cacheKey);
-      // if (cachedData.cacheHit) {
-      //   return cachedData.data;
-      // }
+      const cacheKey = this.createDocumentCacheKey({
+        index,
+        uid,
+        fields,
+      });
+      const cachedData = await this.cacheService.getCache(cacheKey);
+      if (cachedData.cacheHit) {
+        return cachedData.data;
+      }
       const result = await this.meilisearchRepository.getDocument({ documentId, index, fields });
-      // await this.cacheService.setCache(cacheKey, JSON.stringify(result));
+      await this.cacheService.setCache(cacheKey, JSON.stringify(result));
       // const endTime = new Date().getTime();
       // this.loggerService.info({
       //   message: 'Meilisearch get document response time',
@@ -117,15 +115,15 @@ export class MeiliSearchService {
     if (ignoreCache) {
       return this.meilisearchRepository.search({ index, searchText, options });
     }
-    // const cacheKey = this.createSearchCacheKey({
-    //   indexes: [index],
-    //   searchText,
-    //   options,
-    // });
-    // const cachedData = await this.cacheService.getCache(cacheKey);
-    // if (cachedData.cacheHit) {
-    //   return cachedData.data as SearchResponse<DataType, SearchParams>;
-    // }
+    const cacheKey = this.createSearchCacheKey({
+      indexes: [index],
+      searchText,
+      options,
+    });
+    const cachedData = await this.cacheService.getCache(cacheKey);
+    if (cachedData.cacheHit) {
+      return cachedData.data as SearchResponse<DataType, SearchParams>;
+    }
 
     let formatedSearchText = searchText;
     if (searchText) {
@@ -136,14 +134,14 @@ export class MeiliSearchService {
       searchText: formatedSearchText,
       options,
     });
-    // await this.cacheService.setCache(cacheKey, JSON.stringify(result));
-    const endTime = new Date().getTime();
-    if (this.appConfigService.isProduction) {
-      // this.loggerService.info({
-      //   message: 'Meilisearch search response time',
-      //   attributes: { time: endTime - startTime },
-      // });
-    }
+    await this.cacheService.setCache(cacheKey, JSON.stringify(result));
+    // const endTime = new Date().getTime();
+    // if (this.appConfigService.isProduction) {
+    // this.loggerService.info({
+    //   message: 'Meilisearch search response time',
+    //   attributes: { time: endTime - startTime },
+    // });
+    // }
     return result;
   }
 
@@ -153,18 +151,18 @@ export class MeiliSearchService {
     }
 
     const indexFromQueries = queries.map((query) => query.indexUid as MeilisearchDatabaseName);
-    // const cacheKey = this.createSearchCacheKey({
-    //   indexes: indexFromQueries,
-    //   searchText: queries[0].q as string,
-    //   options: {} as SearchParams,
-    // });
-    // const cachedData = await this.cacheService.getCache(cacheKey);
+    const cacheKey = this.createSearchCacheKey({
+      indexes: indexFromQueries,
+      searchText: queries[0].q as string,
+      options: {} as SearchParams,
+    });
+    const cachedData = await this.cacheService.getCache(cacheKey);
 
-    // if (cachedData.cacheHit) {
-    //   return cachedData.data;
-    // }
+    if (cachedData.cacheHit) {
+      return cachedData.data;
+    }
     const result = await this.meilisearchRepository.multiSearch({ queries });
-    // this.cacheService.setCache(cacheKey, JSON.stringify(result));
+    this.cacheService.setCache(cacheKey, JSON.stringify(result));
     return result;
   }
 }

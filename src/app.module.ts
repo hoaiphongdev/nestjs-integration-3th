@@ -8,6 +8,8 @@ import { StrapiModule } from '@/strapi/strapi.module';
 import { MeilisearchModule } from '@/meilisearch/meilisearch.module';
 import { CategoryModule } from '@/category/category.module';
 import { SearchEngineModule } from './search-engine/search-engine.module';
+import { RedisModule } from './redis/redis.module';
+import { CacheModule } from './cache/cache.module';
 
 @Module({
   imports: [
@@ -18,7 +20,9 @@ import { SearchEngineModule } from './search-engine/search-engine.module';
     StrapiModule,
     MeilisearchModule,
     CategoryModule,
-    SearchEngineModule
+    SearchEngineModule,
+    RedisModule,
+    CacheModule
   ],
   controllers: [AppController],
   providers: [AppService],

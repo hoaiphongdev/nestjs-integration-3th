@@ -10,6 +10,7 @@ export class SearchEngineService {
   searchCategory(options?: SearchParams & { searchText?: string }) {
     const { searchText, ...otherOptions } = options || {};
     return this.meilisearchService.search({
+      ignoreCache: false,
       index: MeilisearchDatabaseName.Category,
       searchText,
       options: otherOptions,

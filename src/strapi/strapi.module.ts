@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 
-// TODO [CACHE] import module cache for strapi
-// import { CacheModule } from '@/cache/cache.module';
+import { CacheModule } from '@/cache/cache.module';
 
 // TODO [LOGGER] import module logger for strapi
 // import { LoggerModule } from '@/logger/logger.module';
@@ -15,7 +14,7 @@ import { StrapiService } from './strapi.service';
   imports: [
     // LoggerModule, 
     AppConfigModule, 
-    // acheModule
+    CacheModule
   ],
   providers: [StrapiService],
   controllers: [StrapiController],
